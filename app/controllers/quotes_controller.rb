@@ -3,7 +3,8 @@ class QuotesController < ApplicationController
 
   # GET /quotes or /quotes.json
   def index
-    @quotes = Quote.all
+    # @quotes = Quote.all
+    @quotes = Quote.ordered
   end
 
   # GET /quotes/1 or /quotes/1.json
@@ -20,18 +21,31 @@ class QuotesController < ApplicationController
   end
 
   # POST /quotes or /quotes.json
+  # def create
+  #   @quote = Quote.new(quote_params)
+
+  #   respond_to do |format|
+  #     if @quote.save
+  #       # format.html { redirect_to quote_url(@quote), notice: "Quote was successfully created." }
+  #       format.html { redirect_to quotes_path, notice: "Quote was successfully created." }
+  #       format.json { render :show, status: :created, location: @quote }
+  #     else
+  #       format.html { render :new, status: :unprocessable_entity }
+  #       format.json { render json: @quote.errors, status: :unprocessable_entity }
+  #     end
+  #   end
+  # end
+
   def create
     @quote = Quote.new(quote_params)
 
-    respond_to do |format|
-      if @quote.save
-        # format.html { redirect_to quote_url(@quote), notice: "Quote was successfully created." }
+    if @quote.save
+      respond_to do |format|
         format.html { redirect_to quotes_path, notice: "Quote was successfully created." }
-        format.json { render :show, status: :created, location: @quote }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @quote.errors, status: :unprocessable_entity }
+        format.turbo_stream
       end
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -50,13 +64,22 @@ class QuotesController < ApplicationController
   end
 
   # DELETE /quotes/1 or /quotes/1.json
+  # def destroy
+  #   @quote.destroy
+
+  #   respond_to do |format|
+  #     # format.html { redirect_to quotes_url, notice: "Quote was successfully destroyed." }
+  #     format.html { redirect_to quotes_path, notice: "Quote was successfully destroyed." }
+  #     format.json { head :no_content }
+  #   end
+  # end
+
   def destroy
     @quote.destroy
 
     respond_to do |format|
-      # format.html { redirect_to quotes_url, notice: "Quote was successfully destroyed." }
       format.html { redirect_to quotes_path, notice: "Quote was successfully destroyed." }
-      format.json { head :no_content }
+      format.turbo_stream
     end
   end
 
